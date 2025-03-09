@@ -2,12 +2,17 @@ const createMiddleware = () => {
     return {
         send: (todo) => {
             return new Promise((resolve, reject) => {
+                // Aggiungi la data al corpo della richiesta
+                const todoWithDate = {
+                    ...todo,
+                    data: new Date().toISOString() // Invia la data attuale
+                };
                 fetch("/todo/add", {
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify(todo)
+                    body: JSON.stringify(todoWithDate) // Invia anche la data
                 })
                     .then((response) => response.json())
                     .then((json) => {
@@ -67,6 +72,7 @@ const createList = () => {
     const template = `
                     <tr>                            
                         <td class="%COLOR">%TASK</td>
+                        <td>%DATE</td> <!-- Aggiungi la visualizzazione della data -->
                         <td><button class="btn btn-success" id="COMPLETE_%ID" type="button">COMPLETA</button></td>                            
                         <td><button class="btn btn-danger" id="DELETE_%ID" type="button">ELIMINA</button></td>                                                    
                     </tr>
@@ -79,6 +85,7 @@ const createList = () => {
                 row = row.replace("DELETE_%ID", "DELETE_" + todo.id);
                 row = row.replace("%TASK", todo.name);
                 row = row.replace("%COLOR", todo.completed ? "text-success" : "text-primary");
+                row = row.replace("%DATE", new Date(todo.data).toLocaleString()); // Visualizza la data formattata
                 html += row;
             });
             listTable.innerHTML = html;
