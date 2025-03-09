@@ -4,7 +4,7 @@ const createMiddleware = () => {
             return new Promise((resolve, reject) => {
                 // Aggiungi la data al corpo della richiesta
                 const todoWithDate = {
-                    ...todo,
+                    todo,
                     data: new Date().toISOString() // Invia la data attuale
                 };
                 fetch("/todo/add", {
