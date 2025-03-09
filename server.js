@@ -12,14 +12,14 @@ app.use("/", express.static(path.join(__dirname, "public")));
 let todos = [];
 
 app.post("/todo/add", (req, res) => {
-   const todo = req.body.todo;
-   todo.id = "" + new Date().getTime();
-   todos.push(todo);
-   res.json({result: "Ok"});
+   const { todo, data } = req.body; // Ottieni la data dal corpo della richiesta
+   const id = "" + new Date().getTime(); // Usa il timestamp per generare un ID unico
+   todos.push({ id, name: todo.name, data, completed: false }); // Aggiungi la nuova todo con la data
+   res.json({ result: "Ok" });
 });
 
 app.get("/todo", (req, res) => {
-   res.json({todos: todos});
+   res.json({ todos: todos });
 });
 
 app.put("/todo/complete", (req, res) => {
@@ -35,13 +35,12 @@ app.put("/todo/complete", (req, res) => {
        console.log(e);
     }
     res.json({result: "Ok"});
- });
+});
 
-
- app.delete("/todo/:id", (req, res) => {
+app.delete("/todo/:id", (req, res) => {
     todos = todos.filter((element) => element.id !== req.params.id);
-    res.json({result: "Ok"});  
- })
+    res.json({result: "Ok"});
+});
 
 const server = http.createServer(app);
 
